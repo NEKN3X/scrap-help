@@ -7,13 +7,14 @@
   },
   "scripts": {
     "build": "turbo run build",
-    "lint": "turbo run lint",
+    "lint": "eslint && turbo run lint",
     "format": "eslint --fix && prettier --write \"**/*.{css,html,md}\"",
     "check-types": "turbo run check-types",
     "test": "turbo run test"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.16.2",
+    "@types/node": "^24.0.10",
     "eslint": "^9.30.1",
     "eslint-plugin-format": "^1.0.1",
     "prettier": "^3.6.2",

@@ -1,0 +1,16 @@
+{
+  "name": "@repo/flow",
+  "type": "module",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@repo/config": "workspace:*"
+  }
+}
