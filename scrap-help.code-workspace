@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "packages/pure"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"packages/pure": true
+		}
+	}
+}

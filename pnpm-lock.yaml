@@ -63,7 +63,11 @@ importers:
         specifier: workspace:*
         version: link:../config
 
-  packages/pure: {}
+  packages/pure:
+    devDependencies:
+      purs-tidy:
+        specifier: ^0.11.0
+        version: 0.11.0
 
 packages:
 
@@ -2138,6 +2142,10 @@ packages:
 
   pure-rand@7.0.1:
     resolution: {integrity: sha512-oTUZM/NAZS8p7ANR3SHh30kXB+zK2r2BPcEn/awJIbOvq82WoMN4p62AWWp3Hhw50G0xMsw1mhIBLqHw64EcNQ==}
+
+  purs-tidy@0.11.0:
+    resolution: {integrity: sha512-HZ8AS6J7Ka2YVl6Gr/H5NV17TU10yGYUTxVwRd5tKuwsVdFZewXSzZ/HTpWrkhdR2gxSVk0BdnpJhyu//oRc+w==}
+    hasBin: true
 
   quansync@0.2.10:
     resolution: {integrity: sha512-t41VRkMYbkHyCYmOvx/6URnN80H7k4X0lLdBMGsz+maAwrJQYB1djpV6vHrQIBE0WBSGqhtEHrK9U3DWWH8v7A==}
@@ -5152,6 +5160,8 @@ snapshots:
   punycode@2.3.1: {}
 
   pure-rand@7.0.1: {}
+
+  purs-tidy@0.11.0: {}
 
   quansync@0.2.10: {}
 
