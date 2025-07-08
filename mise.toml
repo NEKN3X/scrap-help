@@ -1,0 +1,9 @@
+[tools]
+pnpm = "latest"
+
+[tasks]
+build = "pnpm run build"
+lint = "pnpm run lint"
+format = "pnpm run format"
+check-types = "pnpm run check-types"
+test = "pnpm run test"
