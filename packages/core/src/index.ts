@@ -1,1 +1,2 @@
-export const hello = 'Hello, world!'
+export * from './hello'
+// export const hello = 'Hello, world!'
