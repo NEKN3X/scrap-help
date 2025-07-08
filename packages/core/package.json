@@ -1,0 +1,20 @@
+{
+  "name": "@repo/core",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.12.4",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "test": "jest",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@repo/config": "workspace:*"
+  }
+}

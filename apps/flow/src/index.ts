@@ -1,4 +1,5 @@
 import process from 'node:process'
+import { hello } from '@repo/core'
 import * as rpc from 'vscode-jsonrpc/node.js'
 
 const connection = rpc.createMessageConnection(
@@ -12,6 +13,9 @@ connection.onRequest('initialize', (_ctx) => {
 
 connection.onRequest('query', (_query, _config) => {
   const result: never[] = []
+  connection.sendRequest('ShowMsg', {
+    title: hello,
+  })
   return { result }
 })
 

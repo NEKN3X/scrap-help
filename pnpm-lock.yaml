@@ -39,8 +39,17 @@ importers:
       '@repo/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@repo/core':
+        specifier: workspace:*
+        version: link:../../packages/core
 
   packages/config: {}
+
+  packages/core:
+    dependencies:
+      '@repo/config':
+        specifier: workspace:*
+        version: link:../config
 
 packages:
 

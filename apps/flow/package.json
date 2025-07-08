@@ -12,6 +12,7 @@
     "vscode-jsonrpc": "^8.2.1"
   },
   "devDependencies": {
-    "@repo/config": "workspace:*"
+    "@repo/config": "workspace:*",
+    "@repo/core": "workspace:*"
   }
 }
