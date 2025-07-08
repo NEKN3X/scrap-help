@@ -1,9 +1,11 @@
 {
 	"folders": [
 		{
+			"name": "scrap-help",
 			"path": "."
 		},
 		{
+			"name": "pure",
 			"path": "packages/pure"
 		}
 	],

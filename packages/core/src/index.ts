@@ -1,2 +1,2 @@
-export * from './hello.js'
-// export const hello = 'Hello, world!'
+export * from './help.js'
+export * from './scrapbox.js'
