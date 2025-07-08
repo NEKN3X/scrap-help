@@ -51,6 +51,9 @@ importers:
       '@repo/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@repo/pure':
+        specifier: workspace:*
+        version: link:../../packages/pure
 
   packages/config: {}
 
@@ -59,6 +62,8 @@ importers:
       '@repo/config':
         specifier: workspace:*
         version: link:../config
+
+  packages/pure: {}
 
 packages:
 

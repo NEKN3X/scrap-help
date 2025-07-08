@@ -1,5 +1,5 @@
 import process from 'node:process'
-import { hello } from '@repo/core'
+import { hello } from '@repo/pure'
 import * as rpc from 'vscode-jsonrpc/node.js'
 
 const connection = rpc.createMessageConnection(

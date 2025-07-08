@@ -1,5 +1,7 @@
 [tools]
 pnpm = "latest"
+purescript = "latest"
+spago = "latest"
 
 [tasks]
 build = "pnpm run build"

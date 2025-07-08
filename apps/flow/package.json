@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@repo/config": "workspace:*",
-    "@repo/core": "workspace:*"
+    "@repo/core": "workspace:*",
+    "@repo/pure": "workspace:*"
   }
 }

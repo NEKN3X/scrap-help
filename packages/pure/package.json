@@ -1,0 +1,21 @@
+{
+  "name": "@repo/pure",
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.12.4",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./types/index.d.ts",
+        "default": "./output/Main/index.js"
+      }
+    }
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "spago build",
+    "test": "spago test"
+  },
+  "devDependencies": {
+  }
+}
