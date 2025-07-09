@@ -1,19 +1,25 @@
 {
   "name": "@repo/gateway",
+  "type": "module",
   "version": "1.0.0",
   "packageManager": "pnpm@10.12.4",
   "license": "MIT",
   "exports": {
     ".": "./dist/index.js"
   },
-  "main": "dist/index.js",
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",
-    "test": "jest",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
-    "@repo/config": "workspace:*"
+    "@repo/config": "workspace:*",
+    "@repo/workflow": "workspace:*",
+    "lowdb": "^7.0.1",
+    "neverthrow": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/lowdb": "^2.0.3"
   }
 }

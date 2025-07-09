@@ -1,5 +1,5 @@
 import process from 'node:process'
-import { hello } from '@repo/pure'
+import { createDb } from '@repo/gateway'
 import * as rpc from 'vscode-jsonrpc/node.js'
 
 const connection = rpc.createMessageConnection(
@@ -11,11 +11,9 @@ connection.onRequest('initialize', (_ctx) => {
   return {}
 })
 
-connection.onRequest('query', (_query, _config) => {
+connection.onRequest('query', async (_query, _config) => {
   const result: never[] = []
-  connection.sendRequest('ShowMsg', {
-    title: hello,
-  })
+  await createDb()
   return { result }
 })
 

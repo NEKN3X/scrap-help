@@ -1,5 +1,11 @@
 import type { ScrapboxPage, ScrapboxProject } from '@repo/core'
-import type { GetCachedScrapboxProject, GetLatestScrapboxPage, GetLatestScrapboxProjectTitles, ScrapboxProjectTitles, UpdateCachedScrapboxProject } from './publicTypes'
+import type {
+  GetCachedScrapboxProject,
+  GetLatestScrapboxPage,
+  GetLatestScrapboxProjectTitles,
+  ScrapboxProjectTitles,
+  UpdateCachedScrapboxProject,
+} from './publicTypes'
 import { ResultAsync } from 'neverthrow'
 
 // 最新のScrapboxProjectTitlesとのペア
@@ -11,6 +17,7 @@ interface ProjectWithLatestTitles {
 // 更新されていることを確認したScrapboxProjectTitlesとのペア
 interface ProjectWithUpdatedTitles {
   cachedProject: ScrapboxProject
+  latestTitles: ScrapboxProjectTitles
   updatedTitles: ScrapboxProjectTitles
 }
 
@@ -23,11 +30,16 @@ function filterUpdatedTitles(
     const cached = cachedTitlesMap.get(latest.id)
     return !cached || cached.updated < latest.updated
   })
-  return { cachedProject: projectWithLatestTitles.cachedProject, updatedTitles }
+  return {
+    cachedProject: projectWithLatestTitles.cachedProject,
+    latestTitles: projectWithLatestTitles.latestTitles,
+    updatedTitles
+  }
 }
 
 interface ProjectWithUpdatedPages {
   cachedProject: ScrapboxProject
+  latestTitles: ScrapboxProjectTitles
   updatedPages: ScrapboxPage[]
 }
 
@@ -36,10 +48,16 @@ function getUpdatedScrapboxPages(
   getLatestScrapboxPage: GetLatestScrapboxPage,
   projectWithUpdatedTitles: ProjectWithUpdatedTitles,
 ): ResultAsync<ProjectWithUpdatedPages, Error> {
-  return ResultAsync.combine(projectWithUpdatedTitles.updatedTitles.map(title => getLatestScrapboxPage(title.title, title.id))).map(pages => ({
-    cachedProject: projectWithUpdatedTitles.cachedProject,
-    updatedPages: pages,
-  }))
+  const updatedPages = projectWithUpdatedTitles.updatedTitles.map(title => getLatestScrapboxPage(
+    projectWithUpdatedTitles.cachedProject.name,
+    title.title,
+  ))
+  return ResultAsync.combine(updatedPages)
+    .map(pages => ({
+      cachedProject: projectWithUpdatedTitles.cachedProject,
+      latestTitles: projectWithUpdatedTitles.latestTitles,
+      updatedPages: pages,
+    }))
 }
 
 // ScrapboxProjectのpagesを更新する
@@ -47,9 +65,12 @@ function mapToScrapboxProject(
   projectWithUpdatedPages: ProjectWithUpdatedPages,
 ): ScrapboxProject {
   const updatedPageMap = new Map(projectWithUpdatedPages.updatedPages.map(page => [page.id, page]))
+  const cachedPageMap = new Map(projectWithUpdatedPages.cachedProject.pages.map(page => [page.id, page]))
   const updatedProject = {
     ...projectWithUpdatedPages.cachedProject,
-    pages: projectWithUpdatedPages.cachedProject.pages.map(page => updatedPageMap.get(page.id) || page),
+    pages: projectWithUpdatedPages.latestTitles
+      .map(title => updatedPageMap.get(title.id) || cachedPageMap.get(title.id) || null)
+      .filter((page): page is ScrapboxPage => page !== null),
   }
   return updatedProject
 }
@@ -59,9 +80,9 @@ export function updateScrapboxProjectCache(
   getLatestScrapboxProjectTitles: GetLatestScrapboxProjectTitles,
   getCachedScrapboxProject: GetCachedScrapboxProject,
   getLatestScrapboxPage: GetLatestScrapboxPage,
-  updateScrapboxProject: UpdateCachedScrapboxProject,
+  updateCachedScrapboxProject: UpdateCachedScrapboxProject,
 ) {
-  return async (projectName: string) => {
+  return (projectName: string) =>
     ResultAsync.combine([
       getLatestScrapboxProjectTitles(projectName),
       getCachedScrapboxProject(projectName),
@@ -70,6 +91,5 @@ export function updateScrapboxProjectCache(
       .map(filterUpdatedTitles)
       .andThen(projectWithUpdatedTitles => getUpdatedScrapboxPages(getLatestScrapboxPage, projectWithUpdatedTitles))
       .map(mapToScrapboxProject)
-      .andThen(updateScrapboxProject)
-  }
+      .andThen(updateCachedScrapboxProject)
 }

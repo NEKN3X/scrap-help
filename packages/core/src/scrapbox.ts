@@ -1,5 +1,4 @@
 export interface ScrapboxProject {
-  id: string
   name: string
   pages: ScrapboxPage[]
 }

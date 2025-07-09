@@ -12,7 +12,6 @@
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",
-    "test": "jest",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {

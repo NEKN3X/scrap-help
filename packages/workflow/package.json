@@ -4,13 +4,13 @@
   "packageManager": "pnpm@10.12.4",
   "license": "MIT",
   "exports": {
-    ".": "./dist/index.js"
+    ".": "./src/index.ts"
   },
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",
-    "test": "jest",
+    "test": "vitest run",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {

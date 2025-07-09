@@ -7,4 +7,12 @@ export default antfu({
     '**/.spago',
     '**/.psci_modules',
   ],
+  rules: {
+    'style/max-len': [
+      'error',
+      {
+        code: 120,
+      },
+    ],
+  },
 })
