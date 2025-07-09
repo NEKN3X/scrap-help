@@ -1,20 +1,20 @@
-export interface Project {
+export interface ScrapboxProject {
   id: string
   name: string
-  pages: Page[]
+  pages: ScrapboxPage[]
 }
 
-export interface PageLine {
+export interface ScrapboxPageLine {
   id: string
   text: string
 }
 
-export interface Page {
+export interface ScrapboxPage {
   id: string
   title: string
   image?: string
   created: number
   updated: number
   helpfeels: string[]
-  lines: PageLine[]
+  lines: ScrapboxPageLine[]
 }
