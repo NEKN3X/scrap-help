@@ -1,0 +1,17 @@
+# $schema: https://www.flowlauncher.com/schemas/settings-template.schema.json
+body:
+  - type: input
+    attributes:
+      name: sid
+      label: connect.sid
+      defaultValue: ''
+  - type: input
+    attributes:
+      name: projects
+      label: '","区切りで複数のプロジェクトを指定'
+      defaultValue: ''
+  - type: input
+    attributes:
+      name: glossaryProject
+      label: glossaryを参照するプロジェクト
+      defaultValue: ''

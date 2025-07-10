@@ -1,25 +1,23 @@
-import process from 'node:process'
-import { setupLoadScrapboxProject } from '@repo/gateway'
-import * as rpc from 'vscode-jsonrpc/node.js'
+import { fetchProjectTitles } from '@repo/gateway'
+import { Flow } from './helper/index.js'
 
-const connection = rpc.createMessageConnection(
-  new rpc.StreamMessageReader(process.stdin),
-  new rpc.StreamMessageWriter(process.stdout),
-)
+interface AppSettings {
+  projects?: string
+  sid?: string
+  glossaryProject?: string
+}
 
-connection.onRequest('initialize', (_ctx) => {
-  return {}
+type AppMethods = 'open_url' | 'copy_text' | 'copy_file'
+
+const flow = new Flow<AppMethods, AppSettings>()
+
+flow.showResult(async (query, settings) => {
+  const { projects, sid, glossaryProject } = settings
+  const result = await fetchProjectTitles(sid)('nekn3x')
+  if (result.isOk()) {
+    flow.showMessage(result._unsafeUnwrap().join(' '))
+  }
+  return []
 })
 
-connection.onRequest('query', async (_query, _config) => {
-  const result: never[] = []
-  const getScrapboxProject = setupLoadScrapboxProject()
-  const a = await getScrapboxProject('test')
-  const b = a._unsafeUnwrap()
-  connection.sendRequest('ShowMsg', {
-    title: b.name,
-  })
-  return { result }
-})
-
-connection.listen()
+flow.run()
