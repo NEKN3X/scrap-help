@@ -33,7 +33,7 @@ function filterUpdatedTitles(
   return {
     cachedProject: projectWithLatestTitles.cachedProject,
     latestTitles: projectWithLatestTitles.latestTitles,
-    updatedTitles
+    updatedTitles,
   }
 }
 

@@ -9,7 +9,7 @@
   "scripts": {
     "build": "turbo run build",
     "lint": "eslint && turbo run lint",
-    "format": "eslint --fix && prettier --write \"**/*.{css,html,md}\"",
+    "format": "eslint --fix",
     "check-types": "turbo run check-types",
     "test": "turbo run test"
   },
