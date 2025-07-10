@@ -8,13 +8,13 @@ export type ScrapboxProjectTitles = {
 }[]
 
 // 最新のScrapboxProjectTitlesを取得する
-export type GetLatestScrapboxProjectTitles = (projectName: string) => ResultAsync<ScrapboxProjectTitles, Error>
-
-// キャッシュされたScrapboxProjectを取得する
-export type GetCachedScrapboxProject = (projectName: string) => ResultAsync<ScrapboxProject, Error>
+export type FetchScrapboxProjectTitles = (projectName: string) => ResultAsync<ScrapboxProjectTitles, Error>
 
 // 最新のScrapboxPageを取得する
-export type GetLatestScrapboxPage = (projectName: string, pageTitle: string) => ResultAsync<ScrapboxPage, Error>
+export type FetchScrapboxPage = (projectName: string, pageTitle: string) => ResultAsync<ScrapboxPage, Error>
+
+// キャッシュされたScrapboxProjectを取得する
+export type LoadScrapboxProject = (projectName: string) => ResultAsync<ScrapboxProject, Error>
 
 // キャッシュされたScrapboxProjectを更新する
-export type UpdateCachedScrapboxProject = (project: ScrapboxProject) => ResultAsync<ScrapboxProject, Error>
+export type SaveScrapboxProject = (project: ScrapboxProject) => ResultAsync<ScrapboxProject, Error>

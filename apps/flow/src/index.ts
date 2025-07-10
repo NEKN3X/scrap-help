@@ -1,5 +1,5 @@
 import process from 'node:process'
-import { createDb } from '@repo/gateway'
+import { setupLoadScrapboxProject } from '@repo/gateway'
 import * as rpc from 'vscode-jsonrpc/node.js'
 
 const connection = rpc.createMessageConnection(
@@ -13,7 +13,12 @@ connection.onRequest('initialize', (_ctx) => {
 
 connection.onRequest('query', async (_query, _config) => {
   const result: never[] = []
-  await createDb()
+  const getScrapboxProject = setupLoadScrapboxProject()
+  const a = await getScrapboxProject('test')
+  const b = a._unsafeUnwrap()
+  connection.sendRequest('ShowMsg', {
+    title: b.name,
+  })
   return { result }
 })
 

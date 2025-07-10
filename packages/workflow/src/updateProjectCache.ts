@@ -1,10 +1,10 @@
 import type { ScrapboxPage, ScrapboxProject } from '@repo/core'
 import type {
-  GetCachedScrapboxProject,
-  GetLatestScrapboxPage,
-  GetLatestScrapboxProjectTitles,
+  FetchScrapboxPage,
+  FetchScrapboxProjectTitles,
+  LoadScrapboxProject,
+  SaveScrapboxProject,
   ScrapboxProjectTitles,
-  UpdateCachedScrapboxProject,
 } from './publicTypes'
 import { ResultAsync } from 'neverthrow'
 
@@ -45,7 +45,7 @@ interface ProjectWithUpdatedPages {
 
 // 更新されたタイトルの最新のScrapboxPageを取得する
 function getUpdatedScrapboxPages(
-  getLatestScrapboxPage: GetLatestScrapboxPage,
+  getLatestScrapboxPage: FetchScrapboxPage,
   projectWithUpdatedTitles: ProjectWithUpdatedTitles,
 ): ResultAsync<ProjectWithUpdatedPages, Error> {
   const updatedPages = projectWithUpdatedTitles.updatedTitles.map(title => getLatestScrapboxPage(
@@ -77,19 +77,19 @@ function mapToScrapboxProject(
 
 // 最新のScrapboxProjectTitlesを取得し、キャッシュを更新する
 export function updateScrapboxProjectCache(
-  getLatestScrapboxProjectTitles: GetLatestScrapboxProjectTitles,
-  getCachedScrapboxProject: GetCachedScrapboxProject,
-  getLatestScrapboxPage: GetLatestScrapboxPage,
-  updateCachedScrapboxProject: UpdateCachedScrapboxProject,
+  fetchScrapboxProjectTitles: FetchScrapboxProjectTitles,
+  loadScrapboxProject: LoadScrapboxProject,
+  fetchScrapboxPage: FetchScrapboxPage,
+  saveScrapboxProject: SaveScrapboxProject,
 ) {
   return (projectName: string) =>
     ResultAsync.combine([
-      getLatestScrapboxProjectTitles(projectName),
-      getCachedScrapboxProject(projectName),
+      fetchScrapboxProjectTitles(projectName),
+      loadScrapboxProject(projectName),
     ])
       .map(([latestTitles, cachedProject]) => ({ latestTitles, cachedProject }))
       .map(filterUpdatedTitles)
-      .andThen(projectWithUpdatedTitles => getUpdatedScrapboxPages(getLatestScrapboxPage, projectWithUpdatedTitles))
+      .andThen(projectWithUpdatedTitles => getUpdatedScrapboxPages(fetchScrapboxPage, projectWithUpdatedTitles))
       .map(mapToScrapboxProject)
-      .andThen(updateCachedScrapboxProject)
+      .andThen(saveScrapboxProject)
 }

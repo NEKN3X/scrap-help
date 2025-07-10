@@ -1,8 +1,8 @@
 import type { Low } from 'lowdb'
 import type { Documents, ProjectsSchema } from './lowdb/schema'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { setupGetCachedScrapboxProject } from './getScrapboxProject'
 import { setupDataBase } from './helper/database'
+import { setupLoadScrapboxProject } from './loadScrapboxProject'
 
 let mockDb: Low<Documents>
 
@@ -37,10 +37,10 @@ async function fixture(data?: Partial<ProjectsSchema[number]>): Promise<Projects
   return testData
 }
 
-describe('getCachedScrapboxProject', () => {
+describe('loadScrapboxProject', () => {
   it('should return project if exists', async () => {
     await fixture()
-    const getCachedScrapboxProject = setupGetCachedScrapboxProject(mockDb)
+    const getCachedScrapboxProject = setupLoadScrapboxProject(mockDb)
     const result = await getCachedScrapboxProject('test')
     expect(result.isOk()).toBe(true)
     expect(result._unsafeUnwrap()).toEqual({ name: 'test', pages: [{
@@ -55,7 +55,7 @@ describe('getCachedScrapboxProject', () => {
   })
 
   it('should return empty project if not exists', async () => {
-    const getCachedScrapboxProject = setupGetCachedScrapboxProject(mockDb)
+    const getCachedScrapboxProject = setupLoadScrapboxProject(mockDb)
     const result = await getCachedScrapboxProject('nonexistent')
     expect(result.isOk()).toBe(true)
     expect(result._unsafeUnwrap()).toEqual({ name: 'nonexistent', pages: [] })

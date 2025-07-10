@@ -1,11 +1,11 @@
 import type { ScrapboxPage, ScrapboxProject } from '@repo/core'
 import type { ResultAsync } from 'neverthrow'
 import type {
-  GetCachedScrapboxProject,
-  GetLatestScrapboxPage,
-  GetLatestScrapboxProjectTitles,
+  FetchScrapboxPage,
+  FetchScrapboxProjectTitles,
+  LoadScrapboxProject,
+  SaveScrapboxProject,
   ScrapboxProjectTitles,
-  UpdateCachedScrapboxProject,
 } from './publicTypes'
 import { errAsync, okAsync } from 'neverthrow'
 import { describe, expect, it } from 'vitest'
@@ -49,19 +49,19 @@ const latestProjectPagesMap = new Map<string, Map<string, ScrapboxPage>>([
   ['test', latestPagesMap],
 ])
 
-const getLatestScrapboxProjectTitles: GetLatestScrapboxProjectTitles = (projectName: string) => {
+const fetchScrapboxProjectTitles: FetchScrapboxProjectTitles = (projectName: string) => {
   return getFromMap(latestProjectTitlesMap, projectName)
 }
 
-const getCachedScrapboxProject: GetCachedScrapboxProject = (projectName: string) => {
+const loadScrapboxProject: LoadScrapboxProject = (projectName: string) => {
   return getFromMap(cachedProjectMap, projectName)
 }
 
-const getLatestScrapboxPage: GetLatestScrapboxPage = (projectName: string, pageTitle: string) => {
+const fetchScrapboxPage: FetchScrapboxPage = (projectName: string, pageTitle: string) => {
   return getFromMap(latestProjectPagesMap, projectName).andThen(pages => getFromMap(pages, pageTitle))
 }
 
-const updateCachedScrapboxProject: UpdateCachedScrapboxProject = (project: ScrapboxProject) => {
+const saveScrapboxProject: SaveScrapboxProject = (project: ScrapboxProject) => {
   return okAsync(project)
 }
 
@@ -69,10 +69,10 @@ describe('updateScrapboxProjectCache', () => {
   it('should update cached project', async () => {
     const projectName = 'test'
     const workflow = updateScrapboxProjectCache(
-      getLatestScrapboxProjectTitles,
-      getCachedScrapboxProject,
-      getLatestScrapboxPage,
-      updateCachedScrapboxProject,
+      fetchScrapboxProjectTitles,
+      loadScrapboxProject,
+      fetchScrapboxPage,
+      saveScrapboxProject,
     )(projectName)
     const result = await workflow
     expect(result.isOk()).toBe(true)
