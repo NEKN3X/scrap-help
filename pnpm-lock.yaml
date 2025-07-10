@@ -102,6 +102,9 @@ importers:
       neverthrow:
         specifier: ^8.2.0
         version: 8.2.0
+      ts-monadic-parser:
+        specifier: ^2.0.3
+        version: 2.0.3
 
 packages:
 
@@ -1819,6 +1822,10 @@ packages:
     resolution: {integrity: sha512-EDyGAwH1gO0Ausm9gV6T2nUvBgXT5kGoCMJPllOaooZ+4VvJiKBdZE7wK18N1deEowhcUptS+5GXZK8U/fvpwA==}
     peerDependencies:
       typescript: '>=4.0.0'
+
+  ts-monadic-parser@2.0.3:
+    resolution: {integrity: sha512-LODspQJOlVAyfOU2NNDO43EDSN6R3V9E6a/H+MWUd/9QXyVapNr/GFO0J6/DKSrA9i/9L1WeCDz9cynjvgIMvQ==}
+    engines: {node: '>=18'}
 
   tsc-alias@1.8.16:
     resolution: {integrity: sha512-QjCyu55NFyRSBAl6+MTFwplpFcnm2Pq01rR/uxfqJoLMm6X3O14KEGtaSDZpJYaE1bJBGDjD0eSuiIWPe2T58g==}
@@ -3877,6 +3884,8 @@ snapshots:
     dependencies:
       picomatch: 4.0.2
       typescript: 5.8.3
+
+  ts-monadic-parser@2.0.3: {}
 
   tsc-alias@1.8.16:
     dependencies:

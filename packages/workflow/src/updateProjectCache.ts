@@ -75,7 +75,7 @@ function mapToScrapboxProject(
   return updatedProject
 }
 
-// 最新のScrapboxProjectTitlesを取得し、キャッシュを更新する
+// 最新のScrapboxProjectを取得し、キャッシュを更新する
 export function updateScrapboxProjectCache(
   fetchScrapboxProjectTitles: FetchScrapboxProjectTitles,
   loadScrapboxProject: LoadScrapboxProject,
