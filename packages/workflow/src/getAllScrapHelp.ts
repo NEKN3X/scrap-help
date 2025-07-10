@@ -1,10 +1,16 @@
 import type { Glossary, ScrapboxPage, ScrapboxProject, ScrapHelp } from '@repo/core'
 import type { LoadGlossary, LoadScrapboxProject } from './publicTypes.js'
-import { err, ok, Result, ResultAsync } from 'neverthrow'
+import { ok, Result, ResultAsync } from 'neverthrow'
 
 import { replaceGlossaryTerms } from './helper/glossary.js'
 import { expand } from './helper/parser.js'
-import { helpContentRegex, helpfeelRegex, textHelpRegex, urlHelpRegex } from './helper/regex.js'
+import {
+  helpfeelRegex,
+  textHelpRegex,
+  urlHelpRegex,
+  urlHelpRegex2,
+  urlHelpRegex3,
+} from './helper/regex.js'
 
 interface MaybeHelp {
   helpfeel: string
@@ -46,6 +52,8 @@ function validateContent(
     })
   }
   const url = urlHelpRegex.exec(help.content)?.[1]
+    || urlHelpRegex2.exec(help.content)?.[1]
+    || urlHelpRegex3.exec(help.content)?.[1]
   if (url) {
     return ok({
       type: 'url',
@@ -53,15 +61,17 @@ function validateContent(
       url: new URL(url),
     })
   }
-  return err(new Error(`Invalid help content: ${help.content}`))
+  return ok({
+    type: 'url',
+    helpfeel: help.helpfeel,
+    url: new URL(`https://scrapbox.io/${project.name}/${encodeURIComponent(page.title)}`),
+  })
 }
 
 function validateHelpfeel(
-  glossary: Glossary,
   unvalidatedHelp: UnvalidatedHelp,
 ): Result<ScrapHelp[], Error> {
-  const helpfeel = replaceGlossaryTerms(unvalidatedHelp.helpfeel, glossary)
-  const result = expand(helpfeel)
+  const result = expand(unvalidatedHelp.helpfeel)
   return result.map(expanded => expanded.map(command => ({
     ...unvalidatedHelp,
     command,
@@ -70,16 +80,21 @@ function validateHelpfeel(
 
 function extractScrapHelp(glossary: Glossary, project: ScrapboxProject) {
   return Result.combine(project.pages
-    .flatMap(page =>
-      page.helpfeels
-        .map((helpfeel): MaybeHelp => ({
-          helpfeel,
-          content: page.lines.find((line, index) =>
-            page.lines[index - 1]?.text === helpfeel && helpContentRegex.test(line.text))?.text,
-        }))
+    .flatMap((page) => {
+      return page.lines.map(x => x.text)
+        .flatMap((text, index): MaybeHelp[] => {
+          const helpfeel = helpfeelRegex.exec(text)?.[1]
+          if (!helpfeel)
+            return []
+          const nextLine = page.lines[index + 1]?.text
+          return [{
+            helpfeel: replaceGlossaryTerms(helpfeel, glossary),
+            content: nextLine && replaceGlossaryTerms(nextLine, glossary),
+          }]
+        })
         .map(validateContent.bind(null, project, page))
-        .map(x => x.andThen(help => validateHelpfeel(glossary, help))),
-    ))
+    }))
+    .andThen(x => Result.combine(x.map(validateHelpfeel)))
     .map(x => x.flat())
     .map(helps => ({ project, helps }))
 }

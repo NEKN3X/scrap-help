@@ -27,7 +27,7 @@ flow.showResult(async (query, settings) => {
   const saveScrapboxProject = setupSaveScrapboxProject()
   const loadGlossary = setupLoadGlossary(
     settings.glossaryProject ?? '',
-    { query: query.searchTerms.slice(0).join(' ') },
+    { query: query.searchTerms.slice(1).join(' ') },
   )
   const updateScrapboxProjectCacheWorkflow = updateScrapboxProjectCache(
     fetchScrapboxProjectTitles,
@@ -48,6 +48,7 @@ flow.showResult(async (query, settings) => {
             {
               title: help.command,
               subTitle: help.text,
+              icoPath: 'assets/clipboard.png',
               jsonRPCAction: {
                 method: 'copy_text',
                 parameters: [help.text],
@@ -60,6 +61,7 @@ flow.showResult(async (query, settings) => {
             {
               title: help.command,
               subTitle: urlToSubTitle(help.url),
+              icoPath: help.url.hostname === 'scrapbox.io' ? 'assets/circle-help.png' : 'assets/globe.png',
               jsonRPCAction: {
                 method: 'open_url',
                 parameters: [help.url.toString()],
@@ -79,6 +81,7 @@ flow.showResult(async (query, settings) => {
           return {
             title: page.title,
             subTitle: `/${projectWithHelps.project.name}`,
+            icoPath: 'assets/sticky-note.png',
             jsonRPCAction: {
               method: 'open_url',
               parameters: [url.toString()],
@@ -89,6 +92,18 @@ flow.showResult(async (query, settings) => {
     ))
     .map(x => x.flat())
     .map(x => search(x, query.search, item => item.title))
+    .map(x => x.reduce(
+      (acc, item) =>
+        acc.some(
+          x =>
+            x.jsonRPCAction.method === item.jsonRPCAction.method
+            && x.subTitle === item.subTitle
+            && x.icoPath === item.icoPath,
+        )
+          ? acc
+          : acc.concat(item),
+      [] as JSONRPCResponse<AppMethods>[],
+    ))
 
   if (result.isOk()) {
     return result.value
