@@ -1,2 +1,3 @@
-export * from './publicTypes'
-export * from './updateProjectCache'
+export * from './getAllScrapHelp.js'
+export * from './publicTypes.js'
+export * from './updateProjectCache.js'

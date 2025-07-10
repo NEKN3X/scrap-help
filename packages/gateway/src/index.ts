@@ -1,3 +1,6 @@
 export * from './fetchProjectTitles.js'
+export * from './fetchScrapboxPage.js'
+export * from './loadGlossary.js'
 export * from './loadScrapboxProject.js'
 export * from './lowdb/index.js'
+export * from './saveScrapboxProject.js'

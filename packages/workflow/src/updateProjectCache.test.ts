@@ -6,10 +6,10 @@ import type {
   LoadScrapboxProject,
   SaveScrapboxProject,
   ScrapboxProjectTitles,
-} from './publicTypes'
+} from './publicTypes.js'
 import { errAsync, okAsync } from 'neverthrow'
 import { describe, expect, it } from 'vitest'
-import { updateScrapboxProjectCache } from './updateProjectCache'
+import { updateScrapboxProjectCache } from './updateProjectCache.js'
 
 function getFromMap<K, V>(map: Map<K, V>, key: K): ResultAsync<V, Error> {
   const value = map.get(key)

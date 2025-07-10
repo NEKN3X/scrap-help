@@ -20,6 +20,9 @@ importers:
       eslint-plugin-format:
         specifier: ^1.0.1
         version: 1.0.1(eslint@9.30.1)
+      neverthrow:
+        specifier: ^8.2.0
+        version: 8.2.0
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
@@ -71,6 +74,9 @@ importers:
       '@repo/config':
         specifier: workspace:*
         version: link:../config
+      '@repo/core':
+        specifier: workspace:*
+        version: link:../core
       '@repo/workflow':
         specifier: workspace:*
         version: link:../workflow

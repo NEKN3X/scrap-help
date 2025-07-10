@@ -1,10 +1,10 @@
 import type { Glossary, ScrapboxPage, ScrapboxProject, ScrapHelp } from '@repo/core'
-import type { LoadAllScrapboxProjects, LoadGlossary } from './publicTypes'
+import type { LoadGlossary, LoadScrapboxProject } from './publicTypes.js'
 import { err, ok, Result, ResultAsync } from 'neverthrow'
 
-import { replaceGlossaryTerms } from './helper/glossary'
-import { expand } from './helper/parser'
-import { helpContentRegex, textHelpRegex } from './helper/regex'
+import { replaceGlossaryTerms } from './helper/glossary.js'
+import { expand } from './helper/parser.js'
+import { helpContentRegex, textHelpRegex } from './helper/regex.js'
 
 interface MaybeHelp {
   helpfeel: string
@@ -78,11 +78,11 @@ function extractScrapHelp(project: ScrapboxProject, glossary: Glossary) {
 }
 
 export function getAllScrapHelp(
-  loadAllScrapboxProjects: LoadAllScrapboxProjects,
+  loadScrapboxProjects: LoadScrapboxProject,
   loadGlossary: LoadGlossary,
 ) {
-  return () =>
-    ResultAsync.combine([loadAllScrapboxProjects(), loadGlossary()])
+  return (projects: string[]) =>
+    ResultAsync.combine([ResultAsync.combine(projects.map(loadScrapboxProjects)), loadGlossary()])
       .andThen(([projects, glossary]) =>
         (Result.combine(projects.flatMap(project => extractScrapHelp(project, glossary)))))
 }

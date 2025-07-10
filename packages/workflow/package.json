@@ -1,12 +1,12 @@
 {
   "name": "@repo/workflow",
+  "type": "module",
   "version": "1.0.0",
   "packageManager": "pnpm@10.12.4",
   "license": "MIT",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./dist/index.js"
   },
-  "main": "dist/index.js",
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",

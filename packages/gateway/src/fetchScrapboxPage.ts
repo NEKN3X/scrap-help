@@ -1,26 +1,31 @@
-import type { FetchScrapboxProjectTitles } from '@repo/workflow'
+import type { FetchScrapboxPage } from '@repo/workflow'
 import { ResultAsync } from 'neverthrow'
 import { scrapboxApiUrl } from './helper/index.js'
 
-type ProjectTitlesResponse = {
+interface ScrapboxPageResponse {
   id: string
   title: string
-  links: string[]
   image?: string
+  created: number
   updated: number
-}[]
+  helpfeels: string[]
+  lines: {
+    id: string
+    text: string
+  }[]
+}
 
-export function setupFetchProjectTitles(
+export function setupFetchScrapboxPage(
   sid?: string,
-): FetchScrapboxProjectTitles {
-  return (projectName: string) =>
+): FetchScrapboxPage {
+  return (projectName: string, pageTitle: string) =>
     ResultAsync.fromPromise(
-      fetch(`${scrapboxApiUrl}/pages/${projectName}/search/titles`, {
+      fetch(`${scrapboxApiUrl}/pages/${projectName}/${encodeURIComponent(pageTitle)}`, {
         headers: {
           ...(sid ? { Cookie: `connect.sid=${sid}` } : {}),
         },
       })
-        .then(async response => await response.json() as ProjectTitlesResponse),
+        .then(async response => await response.json() as ScrapboxPageResponse),
       (error) => {
         if (error instanceof Error) {
           return error
