@@ -2,6 +2,11 @@
 
 ## Flow Launcher Plugin
 
+- Scrapboxページを検索する機能
+- Scrapboxページに書いているヘルプ(Helpfeel記法)を検索する機能
+
+### Dev
+
 - FlowLauncher/Pluginsディレクトリにapps/flowディレクトリのsymlinkを貼る
 
 ```
