@@ -1,4 +1,4 @@
-# Scrap Help
+# ScrapHelp
 
 ## Flow Launcher Plugin
 
