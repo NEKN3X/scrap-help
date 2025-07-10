@@ -8,7 +8,7 @@ import {
 } from '@repo/gateway'
 import { getAllScrapHelp, updateScrapboxProjectCache } from '@repo/workflow'
 import { ResultAsync } from 'neverthrow'
-import { Flow, search, urlToSubTitle } from './helper/index.js'
+import { Flow, scrapboxLink, scrapboxUrl, search, urlToSubTitle } from './helper/index.js'
 
 interface AppSettings {
   projects?: string
@@ -41,56 +41,80 @@ flow.showResult(async (query, settings) => {
     loadScrapboxProject,
     loadGlossary,
   )(projects)
-    .map(projects => projects.map(project => project.helps.flatMap((help): JSONRPCResponse<AppMethods>[] => {
-      switch (help.type) {
-        case 'text': {
-          return [
-            {
-              title: help.command,
-              subTitle: help.text,
-              icoPath: 'assets/clipboard.png',
-              jsonRPCAction: {
-                method: 'copy_text',
-                parameters: [help.text],
-              },
-            },
-          ]
-        }
-        case 'url': {
-          return [
-            {
-              title: help.command,
-              subTitle: urlToSubTitle(help.url),
-              icoPath: help.url.hostname === 'scrapbox.io' ? 'assets/circle-help.png' : 'assets/globe.png',
-              jsonRPCAction: {
-                method: 'open_url',
-                parameters: [help.url.toString()],
-              },
-            },
-          ]
-        }
-        default: {
-          return []
-        }
-      }
-    })).concat(
-      projects.flatMap(projectWithHelps =>
-        projectWithHelps.project.pages.map((page): JSONRPCResponse<AppMethods> => {
-          const url = new URL(`https://scrapbox.io/${projectWithHelps.project.name}/${encodeURIComponent(page.title)}`)
-
-          return {
-            title: page.title,
-            subTitle: `/${projectWithHelps.project.name}`,
+    .map(projects =>
+      projects.map(project =>
+        project.pages.map(page => page.helps.flatMap((help): JSONRPCResponse<AppMethods>[] => {
+          switch (help.type) {
+            case 'text': {
+              return [
+                {
+                  title: help.command,
+                  subTitle: help.text,
+                  icoPath: 'assets/clipboard.png',
+                  jsonRPCAction: {
+                    method: 'copy_text',
+                    parameters: [help.text],
+                  },
+                  contextData: [{
+                    title: 'Open in Scrapbox',
+                    subTitle: `/${project.project.name}/${page.page.title}`,
+                    icoPath: 'assets/sticky-note.png',
+                    jsonRPCAction: {
+                      method: 'open_url',
+                      parameters: [scrapboxUrl(project.project.name, page.page.title).toString()],
+                    },
+                  }],
+                },
+              ]
+            }
+            case 'url': {
+              return [
+                {
+                  title: help.command,
+                  subTitle: urlToSubTitle(help.url),
+                  icoPath: help.url.hostname === 'scrapbox.io' ? 'assets/circle-help.png' : 'assets/globe.png',
+                  jsonRPCAction: {
+                    method: 'open_url',
+                    parameters: [help.url.toString()],
+                  },
+                  contextData: [{
+                    title: 'Copy Scrapbox Link',
+                    subTitle: scrapboxLink(project.project.name, page.page.title),
+                    icoPath: 'assets/clipboard.png',
+                    jsonRPCAction: {
+                      method: 'copy_text',
+                      parameters: [scrapboxLink(project.project.name, page.page.title)],
+                    },
+                  }],
+                },
+              ]
+            }
+            default: {
+              return []
+            }
+          }
+        }).concat(
+          {
+            title: page.page.title,
+            subTitle: `/${project.project.name}`,
             icoPath: 'assets/sticky-note.png',
             jsonRPCAction: {
               method: 'open_url',
-              parameters: [url.toString()],
+              parameters: [scrapboxUrl(project.project.name, page.page.title).toString()],
             },
-          }
-        }),
-      ),
-    ))
-    .map(x => x.flat())
+            contextData: [{
+              title: 'Copy Scrapbox Link',
+              subTitle: scrapboxLink(project.project.name, page.page.title),
+              icoPath: 'assets/clipboard.png',
+              jsonRPCAction: {
+                method: 'copy_text',
+                parameters: [scrapboxLink(project.project.name, page.page.title)],
+              },
+            }],
+          },
+        )),
+      ).flat().flat(),
+    )
     .map(x => search(x, query.search, item => item.title))
     .map(x => x.reduce(
       (acc, item) =>

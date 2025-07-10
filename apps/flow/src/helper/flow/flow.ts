@@ -26,6 +26,7 @@ export class Flow<TMethods, TSettings> implements IFlow<TMethods, TSettings> {
       await init?.(this._context)
       return {}
     })
+    this.connection.onRequest('context_menu', (result: JSONRPCResponse<TMethods>) => ({ result }))
   }
 
   public get context() {
