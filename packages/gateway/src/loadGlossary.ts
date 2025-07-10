@@ -24,17 +24,24 @@ export function emptyGlossary(): Glossary {
   return {}
 }
 
-export function setupLoadGlossary(glossaryProject: string, lowdb: Low<DataBase> = db): LoadGlossary {
+export function setupLoadGlossary(
+  glossaryProject: string,
+  additional: Glossary = {},
+  lowdb: Low<DataBase> = db,
+): LoadGlossary {
   return () =>
     ResultAsync.fromSafePromise(lowdb.read())
       .map(() => lowdb.data)
       .map(({ projects }) => {
         const project = projects.find(p => p.name === glossaryProject)
         if (!project)
-          return emptyGlossary()
+          return { ...emptyGlossary(), ...additional }
         const glossaryPage = project.pages.find(page => page.title.match(/glossary/i))
         if (!glossaryPage)
-          return emptyGlossary()
-        return extractGlossary(glossaryPage.lines.map(line => line.text))
+          return { ...emptyGlossary(), ...additional }
+        return {
+          ...extractGlossary(glossaryPage.lines.map(line => line.text)),
+          ...additional,
+        }
       })
 }

@@ -13,6 +13,7 @@
     "@repo/gateway": "workspace:*",
     "@repo/pure": "workspace:*",
     "@repo/workflow": "workspace:*",
+    "fzf": "^0.5.2",
     "vscode-jsonrpc": "^8.2.1"
   },
   "devDependencies": {

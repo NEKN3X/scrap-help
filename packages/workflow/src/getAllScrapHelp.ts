@@ -4,7 +4,7 @@ import { err, ok, Result, ResultAsync } from 'neverthrow'
 
 import { replaceGlossaryTerms } from './helper/glossary.js'
 import { expand } from './helper/parser.js'
-import { helpContentRegex, textHelpRegex } from './helper/regex.js'
+import { helpContentRegex, helpfeelRegex, textHelpRegex, urlHelpRegex } from './helper/regex.js'
 
 interface MaybeHelp {
   helpfeel: string
@@ -12,11 +12,13 @@ interface MaybeHelp {
 }
 
 interface UnvalidatedTextHelp {
+  type: 'text'
   helpfeel: string
   text: string
 }
 
 interface UnvalidatedUrlHelp {
+  type: 'url'
   helpfeel: string
   url: URL
 }
@@ -30,30 +32,33 @@ function validateContent(
 ): Result<UnvalidatedHelp, Error> {
   if (!help.content) {
     return ok({
+      type: 'url',
       helpfeel: help.helpfeel,
       url: new URL(`https://scrapbox.io/${project.name}/${encodeURIComponent(page.title)}`),
     })
   }
-  const text = textHelpRegex.exec(help.content)
+  const text = textHelpRegex.exec(help.content)?.[1]
   if (text) {
     return ok({
+      type: 'text',
       helpfeel: help.helpfeel,
-      text: help.content,
+      text,
     })
   }
-  const url = helpContentRegex.exec(help.content)
+  const url = urlHelpRegex.exec(help.content)?.[1]
   if (url) {
     return ok({
+      type: 'url',
       helpfeel: help.helpfeel,
-      url: new URL(help.content),
+      url: new URL(url),
     })
   }
   return err(new Error(`Invalid help content: ${help.content}`))
 }
 
 function validateHelpfeel(
-  unvalidatedHelp: UnvalidatedHelp,
   glossary: Glossary,
+  unvalidatedHelp: UnvalidatedHelp,
 ): Result<ScrapHelp[], Error> {
   const helpfeel = replaceGlossaryTerms(unvalidatedHelp.helpfeel, glossary)
   const result = expand(helpfeel)
@@ -63,8 +68,8 @@ function validateHelpfeel(
   })))
 }
 
-function extractScrapHelp(project: ScrapboxProject, glossary: Glossary) {
-  return project.pages
+function extractScrapHelp(glossary: Glossary, project: ScrapboxProject) {
+  return Result.combine(project.pages
     .flatMap(page =>
       page.helpfeels
         .map((helpfeel): MaybeHelp => ({
@@ -73,8 +78,10 @@ function extractScrapHelp(project: ScrapboxProject, glossary: Glossary) {
             page.lines[index - 1]?.text === helpfeel && helpContentRegex.test(line.text))?.text,
         }))
         .map(validateContent.bind(null, project, page))
-        .map(x => x.andThen(help => validateHelpfeel(help, glossary))),
-    )
+        .map(x => x.andThen(help => validateHelpfeel(glossary, help))),
+    ))
+    .map(x => x.flat())
+    .map(helps => ({ project, helps }))
 }
 
 export function getAllScrapHelp(
@@ -84,5 +91,6 @@ export function getAllScrapHelp(
   return (projects: string[]) =>
     ResultAsync.combine([ResultAsync.combine(projects.map(loadScrapboxProjects)), loadGlossary()])
       .andThen(([projects, glossary]) =>
-        (Result.combine(projects.flatMap(project => extractScrapHelp(project, glossary)))))
+        (Result.combine(projects.flatMap(extractScrapHelp.bind(null, glossary))))
+          .map(x => x.flat()))
 }
