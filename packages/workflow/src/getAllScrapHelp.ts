@@ -1,6 +1,6 @@
 import type { Glossary, ScrapboxPage, ScrapboxProject, ScrapHelp } from '@repo/core'
 import type { LoadAllScrapboxProjects, LoadGlossary } from './publicTypes'
-import { err, ok, okAsync, Result, ResultAsync } from 'neverthrow'
+import { err, ok, Result, ResultAsync } from 'neverthrow'
 
 import { replaceGlossaryTerms } from './helper/glossary'
 import { expand } from './helper/parser'
