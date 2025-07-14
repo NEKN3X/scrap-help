@@ -147,8 +147,34 @@ pub fn space() -> Parser(Nil) {
 }
 
 pub fn int() -> Parser(Int) {
-  use _ <- bind(char(char.unsafe("-")))
-  use n <- bind(nat())
-  pure(-n)
+  {
+    use _ <- bind(char(char.unsafe("-")))
+    use n <- bind(nat())
+    pure(-n)
+  }
   |> alt(nat())
+}
+
+// 前後の空白を無視する
+pub fn token(p: Parser(a)) -> Parser(a) {
+  use _ <- bind(space())
+  use v <- bind(p)
+  use _ <- bind(space())
+  pure(v)
+}
+
+pub fn identifier() -> Parser(String) {
+  token(ident())
+}
+
+pub fn natural() -> Parser(Int) {
+  token(nat())
+}
+
+pub fn integer() -> Parser(Int) {
+  token(int())
+}
+
+pub fn symbol(s: String) -> Parser(String) {
+  token(string(s))
 }

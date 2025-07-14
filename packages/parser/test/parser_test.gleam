@@ -1,3 +1,4 @@
+import gleam/list
 import gleam/option.{None, Some}
 import gleeunit
 import parser.{parse}
@@ -106,4 +107,36 @@ pub fn many_some_test() {
   assert parse(b, "123 abc") == Some(#(123, " abc"))
   let c = parser.space()
   assert parse(c, "   abc") == Some(#(Nil, "abc"))
+}
+
+pub fn int_test() {
+  let p = parser.int()
+  assert parse(p, "123 abc") == Some(#(123, " abc"))
+  assert parse(p, "-123 abc") == Some(#(-123, " abc"))
+  assert parse(p, "abc") == None
+  assert parse(p, "") == None
+}
+
+pub fn identifier_test() {
+  let p = parser.identifier()
+  assert parse(p, " abc   def") == Some(#("abc", "def"))
+  assert parse(p, "abc123   def") == Some(#("abc123", "def"))
+  assert parse(p, "") == None
+}
+
+pub fn nats_test() {
+  let nats = {
+    use _ <- parser.bind(parser.symbol("["))
+    use n <- parser.bind(parser.natural())
+    use ns <- parser.bind(
+      parser.many({
+        use _ <- parser.bind(parser.symbol(","))
+        parser.natural()
+      }),
+    )
+    use _ <- parser.bind(parser.symbol("]"))
+    parser.pure([n] |> list.append(ns))
+  }
+  assert parse(nats, " [1, 2, 3] ") == Some(#([1, 2, 3], ""))
+  assert parse(nats, "[1,2,]") == None
 }
