@@ -6,6 +6,7 @@ export default antfu({
     '**/output',
     '**/.spago',
     '**/.psci_modules',
+    '**/manifest.toml',
   ],
   rules: {
     'style/max-len': [

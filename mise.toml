@@ -1,7 +1,9 @@
 [tools]
+erlang = "latest"
 pnpm = "latest"
 purescript = "latest"
 spago = "latest"
+gleam = "latest"
 
 [tasks]
 build = "pnpm run build"
