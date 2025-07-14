@@ -62,10 +62,15 @@ pub fn factor() -> Parser(List(String)) {
   |> alt(some_str())
 }
 
-pub fn expand(xs: String) -> Result(List(String), String) {
+pub type HelpfeelParserError {
+  UnusedInput(String)
+  InvalidInput(String)
+}
+
+pub fn expand(xs: String) -> Result(List(String), HelpfeelParserError) {
   case parse(literal(), xs) {
     Some(#(n, "")) -> Ok(n)
-    Some(#(_, out)) -> Error("unused input " <> out)
-    None -> Error("invalid input")
+    Some(#(_, out)) -> Error(UnusedInput(out))
+    None -> Error(InvalidInput(xs))
   }
 }
