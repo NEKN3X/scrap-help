@@ -15,6 +15,7 @@ version = "1.0.0"
 [dependencies]
 gleam_stdlib = ">= 0.44.0 and < 2.0.0"
 monadic_parser = { git = "git@github.com:NEKN3x/gleam_monadic_parser", ref = "main" }
+gleam_regexp = ">= 1.1.1 and < 2.0.0"
 
 [dev-dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"
