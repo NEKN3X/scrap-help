@@ -36,12 +36,7 @@ pub fn title_test() {
       "\tHello,  aaa]    [  [aaa  ]  b bWorld",
       "Hello,__aaa___aaa_b_bWorld",
     )
-  assert e(
-      "
-
-
-	Hello,  aaa]    [  [aaa  ]  b bWorld",
-    )
+  assert e("\n\n\n\tHello,  aaa]    [  [aaa  ]  b bWorld")
     == Title(
       "\n\n\n\tHello,  aaa]    [  [aaa  ]  b bWorld",
       "Hello,__aaa___aaa_b_bWorld",
