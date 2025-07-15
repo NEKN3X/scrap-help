@@ -4,12 +4,9 @@ import monadic_parser/parser.{alt, bind, many, pure}
 import scrapbox/helper
 
 fn content_line(base: Int) {
-  use indent <- bind(helper.indent())
-  use text <- bind(helper.not_new_line())
-  case indent |> string.length > base {
-    True -> pure(indent |> string.drop_start(base + 1) <> text)
-    False -> parser.empty()
-  }
+  use _ <- bind(helper.block_indent(base))
+  use text <- bind(helper.line_text())
+  pure(text)
 }
 
 fn content(base: Int) {
@@ -25,10 +22,10 @@ fn content(base: Int) {
 }
 
 pub fn parser() {
-  use indent <- bind(helper.indent())
+  use indent <- bind(helper.many_indent())
   let indent_size = indent |> string.length
   use _ <- bind(parser.symbol("code:"))
-  use title <- bind(helper.not_new_line())
+  use title <- bind(helper.line_text())
   use content <- bind(
     {
       use _ <- bind(helper.new_line())

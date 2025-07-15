@@ -3,14 +3,14 @@ import gleam/option.{None, Some}
 import gleam/regexp
 import gleam/string
 import monadic_parser/char
-import monadic_parser/parser.{bind, blank, many, pure, sat}
+import monadic_parser/parser.{bind, many_blank, pure}
 import scrapbox/helper.{not_space}
 
 pub fn parser() {
-  use blank <- bind(blank())
+  use blank <- bind(many_blank())
   use x <- bind(not_space())
-  use xs <- bind(many(sat(fn(x) { !char.is_newline(x) })))
-  pure(blank <> x |> char.append(xs |> char.join))
+  use xs <- bind(helper.line_text())
+  pure(blank <> x |> char.append(xs))
 }
 
 pub type Title {
