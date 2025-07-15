@@ -17,28 +17,20 @@ pub fn parser_test() {
 
 pub fn title_test() {
   let e = title.extract
-  assert e("abc") == Title("abc", "abc")
-  assert e(" abc\t") == Title(" abc\t", "abc")
-  assert e(" \t abc") == Title(" \t abc", "abc")
-  assert e(" \t　\n\n\nabc") == Title(" \t　\n\n\nabc", "abc")
-  assert e(" \t　title\nnewline\nnewline") == Title(" \t　title", "title")
-  assert e("") == Title("", "Untitled")
-  assert e(" 　\t") == Title(" 　\t", "Untitled")
-  assert e(" \n 　\t") == Title(" \n 　\t", "Untitled")
-  assert e("\tHello,  World ") == Title("\tHello,  World ", "Hello,__World")
-  assert e("\tHello,  [World ") == Title("\tHello,  [World ", "Hello,_World")
-  assert e("\tHello,  [aaa]World ")
-    == Title("\tHello,  [aaa]World ", "Hello,_aaa_World")
-  assert e("\tHello,  aaa] [World")
-    == Title("\tHello,  aaa] [World", "Hello,__aaa__World")
+  assert e("abc") == Title("abc")
+  assert e(" abc\t") == Title("abc")
+  assert e(" \t abc") == Title("abc")
+  assert e(" \t　\n\n\nabc") == Title("abc")
+  assert e(" \t　title\nnewline\nnewline") == Title("title")
+  assert e("") == Title("Untitled")
+  assert e(" 　\t") == Title("Untitled")
+  assert e(" \n 　\t") == Title("Untitled")
+  assert e("\tHello,  World ") == Title("Hello,__World")
+  assert e("\tHello,  [World ") == Title("Hello,_World")
+  assert e("\tHello,  [aaa]World ") == Title("Hello,_aaa_World")
+  assert e("\tHello,  aaa] [World") == Title("Hello,__aaa__World")
   assert e("\tHello,  aaa]    [  [aaa  ]  b bWorld")
-    == Title(
-      "\tHello,  aaa]    [  [aaa  ]  b bWorld",
-      "Hello,__aaa___aaa_b_bWorld",
-    )
+    == Title("Hello,__aaa___aaa_b_bWorld")
   assert e("\n\n\n\tHello,  aaa]    [  [aaa  ]  b bWorld")
-    == Title(
-      "\n\n\n\tHello,  aaa]    [  [aaa  ]  b bWorld",
-      "Hello,__aaa___aaa_b_bWorld",
-    )
+    == Title("Hello,__aaa___aaa_b_bWorld")
 }
