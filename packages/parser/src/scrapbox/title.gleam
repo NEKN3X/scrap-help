@@ -3,11 +3,11 @@ import gleam/option.{None, Some}
 import gleam/regexp
 import gleam/string
 import monadic_parser/char
-import monadic_parser/parser.{bind, many_blank, pure}
+import monadic_parser/parser.{bind, pure} as p
 import scrapbox/helper.{not_space}
 
 pub fn parser() {
-  use blank <- bind(many_blank())
+  use blank <- bind(p.many_blank())
   use x <- bind(not_space())
   use xs <- bind(helper.line_text())
   pure(blank <> x |> char.append(xs))
@@ -20,7 +20,7 @@ pub type Title {
 pub fn extract(xs: String) {
   let assert Ok(re) = regexp.from_string("^[　\\s\n\t]*(\\S*.*)$")
   let assert Ok(re2) = regexp.from_string("\\s*[\\[\\]]\\s*|\\s")
-  case parser.parse(parser(), xs) {
+  case p.parse(parser(), xs) {
     Some(#(title, _)) ->
       Title(
         title

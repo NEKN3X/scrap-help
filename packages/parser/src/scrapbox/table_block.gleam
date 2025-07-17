@@ -1,7 +1,7 @@
 import gleam/list
 import gleam/string
 import monadic_parser/char.{type Char}
-import monadic_parser/parser.{alt, bind, many, pure, sat}
+import monadic_parser/parser.{bind, pure} as p
 import scrapbox/helper
 
 fn is_separator(c: Char) {
@@ -9,15 +9,15 @@ fn is_separator(c: Char) {
 }
 
 fn cell() {
-  use x <- bind(parser.some(parser.not(is_separator)))
+  use x <- bind(p.some(p.not(is_separator)))
   pure(x |> char.join)
 }
 
 fn row() {
   use first_cell <- bind(cell())
   use cells <- bind(
-    many({
-      use _ <- bind(sat(char.is_tab))
+    p.many({
+      use _ <- bind(p.sat(char.is_tab))
       use x <- bind(cell())
       pure(x)
     }),
@@ -34,7 +34,7 @@ fn content_line(base: Int) {
 fn content(base: Int) {
   use first_line <- bind(content_line(base))
   use lines <- bind(
-    many({
+    p.many({
       use _ <- bind(helper.new_line())
       use line <- bind(content_line(base))
       use _ <- bind(helper.eol())
@@ -47,7 +47,7 @@ fn content(base: Int) {
 pub fn parser() {
   use indent <- bind(helper.many_indent())
   let indent_size = indent |> string.length
-  use _ <- bind(parser.symbol("table:"))
+  use _ <- bind(p.symbol("table:"))
   use title <- bind(helper.line_text())
   use table <- bind(
     {
@@ -56,7 +56,7 @@ pub fn parser() {
       use _ <- bind(helper.eol())
       pure(content)
     }
-    |> alt({
+    |> p.alt({
       use _ <- bind(helper.eol())
       pure([])
     }),

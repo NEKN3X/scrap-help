@@ -1,6 +1,6 @@
 import gleam/list
 import gleam/string
-import monadic_parser/parser.{alt, bind, many, pure}
+import monadic_parser/parser.{bind, pure} as p
 import scrapbox/helper
 
 fn content_line(base: Int) {
@@ -12,7 +12,7 @@ fn content_line(base: Int) {
 fn content(base: Int) {
   use first_line <- bind(content_line(base))
   use lines <- bind(
-    many({
+    p.many({
       use _ <- bind(helper.new_line())
       use line <- bind(content_line(base))
       pure(line)
@@ -24,7 +24,7 @@ fn content(base: Int) {
 pub fn parser() {
   use indent <- bind(helper.many_indent())
   let indent_size = indent |> string.length
-  use _ <- bind(parser.symbol("code:"))
+  use _ <- bind(p.symbol("code:"))
   use title <- bind(helper.line_text())
   use content <- bind(
     {
@@ -33,7 +33,7 @@ pub fn parser() {
       use _ <- bind(helper.eol())
       pure(content)
     }
-    |> alt(helper.eol()),
+    |> p.alt(helper.eol()),
   )
 
   pure(CodeBlock(indent_size, title, content))
