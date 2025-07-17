@@ -10,7 +10,7 @@ pub fn parser() {
     use _ <- bind(helper.osb())
     use href <- bind(helper.href())
     use blank <- bind(helper.some_blank())
-    let assert Ok(re) = regexp.from_string("^([^\\]]*\\]?[^\\]]*)\\]")
+    let assert Ok(re) = regexp.from_string("^([^\\]]*[^ 　\t])\\]")
     use match <- bind(regex.rematch(re))
     use text <- bind(case match {
       regexp.Match(_, [Some(x)]) -> pure(x)
@@ -20,14 +20,24 @@ pub fn parser() {
   }
   |> p.alt({
     use _ <- bind(helper.osb())
+    let assert Ok(re) = regexp.from_string("^([^\\]]*[^ 　\t])([ 　\t])")
+    use match <- bind(regex.rematch(re))
+    use #(text, blank) <- bind(case match {
+      regexp.Match(_, [Some(x), Some(y)]) -> pure(#(x, y))
+      _ -> p.empty()
+    })
+    use href <- bind(helper.href())
+    use _ <- bind(helper.csb())
+    pure(ExternalLink("[" <> text <> blank <> href <> "]", href, text))
+  })
+  |> p.alt({
+    use _ <- bind(helper.osb())
     use href <- bind(helper.href())
     use _ <- bind(helper.csb())
     pure(ExternalLink("[" <> href <> "]", href, ""))
   })
   |> p.alt({
     use href <- bind(helper.href())
-    use blank <- bind(helper.some_blank())
-    use text <- bind(helper.line_text())
-    pure(ExternalLink(href <> blank <> text, href, text))
+    pure(ExternalLink(href, href, ""))
   })
 }
