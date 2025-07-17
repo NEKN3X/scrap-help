@@ -8,5 +8,6 @@ pub type Node {
   Code(raw: String, content: String)
   CommandLine(raw: String, symbol: String, content: String)
   ExternalLink(raw: String, href: String, content: String)
+  Formula(raw: String, content: String)
   Deco(raw: String, content: List(Node))
 }
