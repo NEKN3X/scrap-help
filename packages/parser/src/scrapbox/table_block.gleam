@@ -9,7 +9,7 @@ fn is_separator(c: Char) {
 }
 
 fn cell() {
-  use x <- bind(p.some(p.not(is_separator)))
+  use x <- bind(p.many(p.not(is_separator)))
   pure(x |> char.join)
 }
 

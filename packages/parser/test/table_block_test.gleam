@@ -16,4 +16,6 @@ pub fn table_block_test() {
       TableBlock(1, "title", [["cell1-1", "cell1-2"]]),
       "cell2-1\tcell2-2",
     ))
+  assert parse(p, "table: title\n cell1-1\t\tcell1-3\n")
+    == Some(#(TableBlock(0, "title", [["cell1-1", "", "cell1-3"]]), ""))
 }
