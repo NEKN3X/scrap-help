@@ -7,7 +7,11 @@ import monadic_parser/parser.{bind, pure} as p
 import scrapbox/helper.{not_space}
 
 pub fn parser() {
-  use blank <- bind(p.many_blank())
+  use blank <- bind(p.many(
+    p.blank()
+    |> p.alt(helper.new_line()),
+  ))
+  let blank = blank |> char.join
   use x <- bind(not_space())
   use xs <- bind(helper.line_text())
   pure(blank <> x |> char.append(xs))

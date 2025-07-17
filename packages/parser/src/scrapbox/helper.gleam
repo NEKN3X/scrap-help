@@ -1,3 +1,4 @@
+import gleam/string
 import monadic_parser/char.{type Char}
 import monadic_parser/parser.{bind, pure} as p
 
@@ -42,4 +43,21 @@ pub fn eol() {
     pure("")
   }
   |> p.alt(pure(""))
+}
+
+pub fn osb() {
+  p.char(char.new("["))
+}
+
+pub fn csb() {
+  p.char(char.new("]"))
+}
+
+pub fn join_lines(lines) {
+  lines |> string.join("\n")
+}
+
+pub fn some_blank() {
+  use x <- bind(p.some(p.sat(char.is_blank)))
+  pure(x |> char.join)
 }

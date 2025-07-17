@@ -18,7 +18,7 @@ fn content(base: Int) {
       pure(line)
     }),
   )
-  pure([first_line] |> list.append(lines) |> string.join("\n"))
+  pure([first_line] |> list.append(lines) |> helper.join_lines)
 }
 
 pub fn parser() {

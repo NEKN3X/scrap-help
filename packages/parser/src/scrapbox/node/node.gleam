@@ -7,7 +7,14 @@ import scrapbox/helper
 import scrapbox/node/deco
 
 pub type Options {
-  Options(nested: Bool, quoted: Bool)
+  Options(nested: Bool, quoted: Bool, table: Bool)
+}
+
+pub fn blank() {
+  use _ <- bind(helper.osb())
+  use x <- bind(helper.some_blank())
+  use _ <- bind(helper.csb())
+  pure(Blank("[" <> x <> "]"))
 }
 
 pub fn plain() {
@@ -16,7 +23,7 @@ pub fn plain() {
 }
 
 pub fn deco(options: Options) {
-  use _ <- bind(p.char(char.new("[")))
+  use _ <- bind(helper.osb())
   use deco <- bind(p.some(p.sat(deco.decoration_char)))
   let deco = deco |> char.join
   use _ <- bind(p.space())
@@ -37,15 +44,20 @@ pub fn deco(options: Options) {
 
 pub fn parser(options: Options) {
   case options {
-    Options(True, _) -> {
+    Options(True, _, _) -> {
       use p <- bind(plain())
       pure([p])
     }
-    Options(False, _) -> p.many(deco(options))
+    Options(False, _, False) -> p.many(deco(options))
+    _ -> {
+      use p <- bind(plain())
+      pure([p])
+    }
   }
 }
 
 pub type Node {
-  Deco(raw: String, nodes: List(Node))
   Plain(String)
+  Blank(String)
+  Deco(raw: String, nodes: List(Node))
 }
