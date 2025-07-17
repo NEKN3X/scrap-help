@@ -1,3 +1,7 @@
+pub type Options {
+  Options(nested: Bool, quoted: Bool, table: Bool)
+}
+
 pub type Node {
   Plain(String)
   Blank(raw: String, content: String)

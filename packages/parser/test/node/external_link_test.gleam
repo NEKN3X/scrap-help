@@ -4,7 +4,7 @@ import scrapbox/node/external_link
 import scrapbox/node/node.{ExternalLink}
 
 pub fn external_link_test() {
-  let p = external_link.parser()
+  let p = external_link.parser(node.Options(False, False, False))
   assert mp.parse(p, "[http://example.com]")
     == Some(#(
       ExternalLink("[http://example.com]", "http://example.com", ""),

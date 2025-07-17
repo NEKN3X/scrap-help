@@ -4,7 +4,7 @@ import scrapbox/node/blank
 import scrapbox/node/node.{Blank}
 
 pub fn blank_test() {
-  let p = blank.parser()
+  let p = blank.parser(node.Options(False, False, False))
   assert parse(p, "[ ]") == Some(#(Blank("[ ]", " "), ""))
   assert parse(p, "[ 　]") == Some(#(Blank("[ 　]", " 　"), ""))
   assert parse(p, "[ 　\t]") == Some(#(Blank("[ 　\t]", " 　\t"), ""))

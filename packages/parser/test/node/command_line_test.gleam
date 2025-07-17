@@ -4,7 +4,7 @@ import scrapbox/node/command_line
 import scrapbox/node/node.{CommandLine}
 
 pub fn command_line_test() {
-  let p = command_line.parser()
+  let p = command_line.parser(node.Options(False, False, False))
   assert parse(p, "$ command line")
     == Some(#(CommandLine("$ command line", "$", "command line"), ""))
   assert parse(p, "% another command line")
