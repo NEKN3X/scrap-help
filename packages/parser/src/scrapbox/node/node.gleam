@@ -1,7 +1,8 @@
-import gleam/list
-import gleam/string
+import gleam/option.{Some}
+import gleam/regexp
 import monadic_parser/char
 import monadic_parser/parser.{bind, pure} as p
+import monadic_parser/regex
 import scrapbox/helper
 import scrapbox/node/deco
 
@@ -13,17 +14,19 @@ pub fn plain() {
 pub fn deco() {
   use _ <- bind(p.char(char.new("[")))
   use deco <- bind(p.some(p.sat(deco.decoration_char)))
+  let deco = deco |> char.join
   use _ <- bind(p.space())
-  use n <- bind(parser(True))
-  use _ <- bind(p.char(char.new("]")))
-  pure(Deco(
-    "["
-      <> deco |> char.join
-      <> " "
-      <> n |> list.map(get_raw) |> string.concat
-      <> "]",
-    n,
-  ))
+  let assert Ok(re) = regexp.from_string("^(.*)\\]")
+  use text <- bind(regex.rematch(re))
+  use text <- bind(case text {
+    regexp.Match(_, [Some(text)]) -> pure(text)
+    _ -> p.empty()
+  })
+  use nodes <- bind(case p.parse(parser(True), text) {
+    Some(#(nodes, "")) -> pure(nodes)
+    _ -> p.empty()
+  })
+  pure(Deco("[" <> deco <> " " <> text <> "]", nodes))
 }
 
 pub fn parser(nested: Bool) {
@@ -40,11 +43,4 @@ pub fn parser(nested: Bool) {
 pub type Node {
   Deco(raw: String, nodes: List(Node))
   Plain(String)
-}
-
-fn get_raw(node: Node) -> String {
-  case node {
-    Deco(raw, _) -> raw
-    Plain(s) -> s
-  }
 }
