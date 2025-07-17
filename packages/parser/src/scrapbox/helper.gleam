@@ -1,6 +1,8 @@
+import gleam/regexp
 import gleam/string
 import monadic_parser/char.{type Char}
 import monadic_parser/parser.{bind, pure} as p
+import monadic_parser/regex
 
 pub fn is_indent(c: Char) {
   char.is_space(c) || char.is_full_space(c) || char.is_tab(c)
@@ -46,11 +48,11 @@ pub fn eol() {
 }
 
 pub fn osb() {
-  p.char(char.new("["))
+  p.string("[")
 }
 
 pub fn csb() {
-  p.char(char.new("]"))
+  p.string("]")
 }
 
 pub fn join_lines(lines) {
@@ -60,4 +62,13 @@ pub fn join_lines(lines) {
 pub fn some_blank() {
   use x <- bind(p.some(p.sat(char.is_blank)))
   pure(x |> char.join)
+}
+
+pub fn href() {
+  let assert Ok(re) = regexp.from_string("^https?:\\/\\/[^\\s\\]]+")
+  use match <- bind(regex.rematch(re))
+  case match {
+    regexp.Match(raw, []) -> pure(raw)
+    _ -> p.empty()
+  }
 }
