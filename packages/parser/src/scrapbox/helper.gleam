@@ -64,6 +64,16 @@ pub fn some_blank() {
   pure(x |> char.join)
 }
 
+pub fn not_blank() {
+  use x <- bind(p.not(char.is_blank))
+  pure(x)
+}
+
+pub fn some_not_blank() {
+  use x <- bind(p.some(not_blank()))
+  pure(x |> char.join)
+}
+
 pub fn href() {
   let assert Ok(re) = regexp.from_string("^https?:\\/\\/[^\\s\\]]+")
   use match <- bind(regex.rematch(re))

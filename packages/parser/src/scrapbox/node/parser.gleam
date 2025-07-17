@@ -1,4 +1,5 @@
 import gleam/io
+import gleam/list
 import gleam/option.{Some}
 import gleam/regexp
 import monadic_parser/char
@@ -10,16 +11,17 @@ import scrapbox/node/code
 import scrapbox/node/command_line
 import scrapbox/node/deco
 import scrapbox/node/external_link
+import scrapbox/node/hashtag
 import scrapbox/node/node.{Deco}
 
 pub fn plain() {
   use x <- bind(helper.line_text())
-  pure([node.Plain(x)])
+  pure(node.Plain(x))
 }
 
 pub fn deco(options: node.Options) {
   case options {
-    node.Options(False, _, False) -> {
+    node.Options(False, _, False, _) -> {
       use _ <- bind(helper.osb())
       use deco <- bind(p.some(p.sat(deco.decoration_char)))
       let deco = deco |> char.join
@@ -46,13 +48,28 @@ pub fn deco(options: node.Options) {
   }
 }
 
+pub fn nodes(text: String, options: node.Options) {
+  {
+    use node <- bind(
+      p.some({
+        blank.parser(options)
+        |> p.alt(code.parser(options))
+        |> p.alt(command_line.parser(options))
+        |> p.alt(external_link.parser(options))
+        |> p.alt(deco(options))
+      })
+      |> p.alt(hashtag.parser(options)),
+    )
+    use rest <- bind(nodes("", node.Options(..options, start: False)))
+    pure(node |> list.prepend(node.Plain(text)) |> list.append(rest))
+  }
+  |> p.alt({
+    use p <- bind(p.item())
+    nodes(text <> p |> char.to_string, node.Options(..options, start: False))
+  })
+  |> p.alt({ pure([node.Plain(text)]) })
+}
+
 pub fn parser(options: node.Options) {
-  p.some(
-    blank.parser(options)
-    |> p.alt(code.parser(options))
-    |> p.alt(command_line.parser(options))
-    |> p.alt(external_link.parser(options))
-    |> p.alt(deco(options)),
-  )
-  |> p.alt(plain())
+  nodes("", options)
 }

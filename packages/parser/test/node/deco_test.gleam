@@ -4,7 +4,7 @@ import scrapbox/node/node.{Deco, Plain}
 import scrapbox/node/parser
 
 pub fn deco_test() {
-  let p = parser.deco(node.Options(False, False, False))
+  let p = parser.deco(node.default_options())
   assert mp.parse(p, "[** bold text]")
     == Some(#(Deco("[** bold text]", [Plain("bold text")]), ""))
   assert mp.parse(p, "[!  important text ]abc")

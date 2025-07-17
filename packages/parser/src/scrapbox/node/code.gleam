@@ -4,7 +4,7 @@ import scrapbox/node/node
 
 pub fn parser(options: node.Options) {
   case options {
-    node.Options(False, _, False) -> {
+    node.Options(False, _, False, _) -> {
       use _ <- bind(helper.osb())
       use x <- bind(helper.some_blank())
       use _ <- bind(helper.csb())

@@ -4,7 +4,7 @@ import scrapbox/node/formula
 import scrapbox/node/node.{Formula}
 
 pub fn formula_test() {
-  let p = formula.parser(node.Options(False, False, False))
+  let p = formula.parser(node.default_options())
   assert mp.parse(p, "[$ formula text]")
     == Some(#(Formula("[$ formula text]", "formula text"), ""))
   assert mp.parse(p, "[$ formula] text]abc")
