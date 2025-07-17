@@ -6,12 +6,16 @@ import monadic_parser/regex
 import scrapbox/helper
 import scrapbox/node/deco
 
+pub type Options {
+  Options(nested: Bool, quoted: Bool)
+}
+
 pub fn plain() {
   use x <- bind(helper.line_text())
   pure(Plain(x))
 }
 
-pub fn deco() {
+pub fn deco(options: Options) {
   use _ <- bind(p.char(char.new("[")))
   use deco <- bind(p.some(p.sat(deco.decoration_char)))
   let deco = deco |> char.join
@@ -22,22 +26,23 @@ pub fn deco() {
     regexp.Match(_, [Some(text)]) -> pure(text)
     _ -> p.empty()
   })
-  use nodes <- bind(case p.parse(parser(True), text) {
-    Some(#(nodes, "")) -> pure(nodes)
-    _ -> p.empty()
-  })
+  use nodes <- bind(
+    case p.parse(parser(Options(..options, nested: True)), text) {
+      Some(#(nodes, "")) -> pure(nodes)
+      _ -> p.empty()
+    },
+  )
   pure(Deco("[" <> deco <> " " <> text <> "]", nodes))
 }
 
-pub fn parser(nested: Bool) {
-  use n <- bind(case nested {
-    True -> {
+pub fn parser(options: Options) {
+  case options {
+    Options(True, _) -> {
       use p <- bind(plain())
       pure([p])
     }
-    False -> p.many(deco())
-  })
-  pure(n)
+    Options(False, _) -> p.many(deco(options))
+  }
 }
 
 pub type Node {
