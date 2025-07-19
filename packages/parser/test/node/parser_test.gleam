@@ -1,6 +1,6 @@
 import gleam/option.{Some}
 import monadic_parser/parser as mp
-import scrapbox/node/node.{Deco, Plain}
+import scrapbox/node/node.{Deco, HashTag, Plain}
 import scrapbox/node/parser
 
 pub fn parser_test() {
@@ -12,4 +12,6 @@ pub fn parser_test() {
       "",
     ))
   assert mp.parse(p, "abc#tag") == Some(#([Plain("abc#tag")], ""))
+  assert mp.parse(p, "abc #tag")
+    == Some(#([Plain("abc"), Plain(" "), HashTag("#tag", "tag")], ""))
 }

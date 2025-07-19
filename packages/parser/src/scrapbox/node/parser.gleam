@@ -67,7 +67,12 @@ pub fn nodes(text: String, options: node.Options) {
     use p <- bind(p.item())
     nodes(text <> p |> char.to_string, node.Options(..options, start: False))
   })
-  |> p.alt({ pure([node.Plain(text)]) })
+  |> p.alt({
+    case text {
+      "" -> pure([])
+      x -> pure([node.Plain(x)])
+    }
+  })
 }
 
 pub fn parser(options: node.Options) {
