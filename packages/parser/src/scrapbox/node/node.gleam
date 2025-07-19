@@ -15,5 +15,6 @@ pub type Node {
   Formula(raw: String, content: String)
   HashTag(raw: String, content: String)
   Helpfeel(raw: String, content: String)
+  Icon(raw: String, content: String)
   Deco(raw: String, content: List(Node))
 }
