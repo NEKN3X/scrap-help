@@ -6,7 +6,6 @@ import {
   setupLoadScrapboxProject,
   setupSaveScrapboxProject,
 } from '@repo/gateway'
-import { expand } from '@repo/parser'
 import { getAllScrapHelp, updateScrapboxProjectCache } from '@repo/workflow'
 import { ResultAsync } from 'neverthrow'
 import { Flow, scrapboxLink, scrapboxUrl, search, urlToSubTitle } from './helper/index.js'
