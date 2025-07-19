@@ -1,0 +1,18 @@
+{
+  "name": "@repo/parser",
+  "type": "module",
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.12.4",
+  "license": "MIT",
+  "keywords": [],
+  "exports": {
+    ".": "./build/dev/javascript/parser/helpfeel/parser.mjs"
+  },
+  "scripts": {
+    "test": "gleam test",
+    "build": "gleam build"
+  },
+  "dependencies": {
+    "@progfay/scrapbox-parser": "^10.0.0"
+  }
+}

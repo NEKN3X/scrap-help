@@ -47,9 +47,9 @@ importers:
       '@repo/gateway':
         specifier: workspace:*
         version: link:../../packages/gateway
-      '@repo/pure':
+      '@repo/parser':
         specifier: workspace:*
-        version: link:../../packages/pure
+        version: link:../../packages/parser
       '@repo/workflow':
         specifier: workspace:*
         version: link:../../packages/workflow
@@ -94,11 +94,11 @@ importers:
         specifier: ^2.0.3
         version: 2.0.3
 
-  packages/pure:
-    devDependencies:
-      purs-tidy:
-        specifier: ^0.11.0
-        version: 0.11.0
+  packages/parser:
+    dependencies:
+      '@progfay/scrapbox-parser':
+        specifier: ^10.0.0
+        version: 10.0.0
 
   packages/workflow:
     dependencies:
@@ -476,6 +476,9 @@ packages:
   '@pkgr/core@0.2.7':
     resolution: {integrity: sha512-YLT9Zo3oNPJoBjBc4q8G2mjU4tqIbf5CEOORbUUr48dCD9q3umJ3IPlVqOqDakPfd2HuwccBaqlGhN4Gmr5OWg==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
+
+  '@progfay/scrapbox-parser@10.0.0':
+    resolution: {integrity: sha512-9N0QDiGfEbJqwu4F5lvyYC/IY9cNoFXMMxDdq/V7S5iB5UUFat3M5i9Rsd8GrS7ZZhkUpUf71gQASPzK2l6cdg==}
 
   '@rollup/rollup-android-arm-eabi@4.44.2':
     resolution: {integrity: sha512-g0dF8P1e2QYPOj1gu7s/3LVP6kze9A7m6x0BZ9iTdXK8N5c2V7cpBKHV3/9A4Zd8xxavdhK0t4PnqjkqVmUc9Q==}
@@ -1661,10 +1664,6 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  purs-tidy@0.11.0:
-    resolution: {integrity: sha512-HZ8AS6J7Ka2YVl6Gr/H5NV17TU10yGYUTxVwRd5tKuwsVdFZewXSzZ/HTpWrkhdR2gxSVk0BdnpJhyu//oRc+w==}
-    hasBin: true
-
   quansync@0.2.10:
     resolution: {integrity: sha512-t41VRkMYbkHyCYmOvx/6URnN80H7k4X0lLdBMGsz+maAwrJQYB1djpV6vHrQIBE0WBSGqhtEHrK9U3DWWH8v7A==}
 
@@ -2327,6 +2326,8 @@ snapshots:
   '@pkgr/core@0.1.2': {}
 
   '@pkgr/core@0.2.7': {}
+
+  '@progfay/scrapbox-parser@10.0.0': {}
 
   '@rollup/rollup-android-arm-eabi@4.44.2':
     optional: true
@@ -3739,8 +3740,6 @@ snapshots:
   prettier@3.6.2: {}
 
   punycode@2.3.1: {}
-
-  purs-tidy@0.11.0: {}
 
   quansync@0.2.10: {}
 
